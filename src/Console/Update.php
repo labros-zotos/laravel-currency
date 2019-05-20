@@ -15,7 +15,8 @@ class Update extends Command
      */
     protected $signature = 'currency:update
                                 {--o|openexchangerates : Get rates from OpenExchangeRates.org}
-                                {--g|google : Get rates from Google Finance}';
+                                {--g|google : Get rates from Google Finance}
+                                {base? : Base currency to override the config default}';
 
     /**
      * The console command description.
@@ -59,7 +60,10 @@ class Update extends Command
     public function handle()
     {
         // Get Settings
-        $defaultCurrency = $this->currency->config('default');
+        if (!is_null($this->argument('base')))
+            $defaultCurrency = $this->argument('base');
+        else
+            $defaultCurrency = $this->currency->config('default');
 
         if ($this->input->getOption('google')) {
             // Get rates from google
