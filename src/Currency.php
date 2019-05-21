@@ -71,7 +71,7 @@ class Currency
      *
      * @return string
      */
-    public function convert($amount, $from = null, $to = null, $format = true)
+    public function convert($amount, $from = null, $to = null, $format = true, $multiplier = 1)
     {
         // Get currencies involved
         $from = $from ?: $this->config('default');
@@ -91,7 +91,7 @@ class Currency
             $value = $amount;
         }
         else {
-            $value = ($amount * $to_rate) / $from_rate;
+            $value = ($amount * $to_rate) / ($from_rate * $multiplier);
         }
 
         // Should the result be formatted?
