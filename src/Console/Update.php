@@ -64,7 +64,7 @@ class Update extends Command
             $defaultCurrency = $this->argument('base');
         else
             $defaultCurrency = $this->currency->config('default');
-
+            
         if ($this->input->getOption('google')) {
             // Get rates from google
             return $this->updateFromGoogle($defaultCurrency);

@@ -69,7 +69,7 @@ class Currency
      * @param string $to
      * @param bool   $format
      *
-     * @return string
+     * @return string|null
      */
     public function convert($amount, $from = null, $to = null, $format = true, $multiplier = 1)
     {
@@ -86,12 +86,16 @@ class Currency
             return null;
         }
 
-        // Convert amount
-        if ($from === $to) {
-            $value = $amount;
-        }
-        else {
-            $value = ($amount * $to_rate) / ($from_rate * $multiplier);
+        try {
+            // Convert amount
+            if ($from === $to) {
+                $value = $amount;
+            } else {
+                $value = ($amount * $to_rate) / ($from_rate * $multiplier);
+            }
+        } catch (\Exception $e) {
+            // Prevent invalid conversion or division by zero errors
+            return null;
         }
 
         // Should the result be formatted?
@@ -134,18 +138,18 @@ class Currency
         // Match decimal and thousand separators
         preg_match_all('/[\s\',.!]/', $format, $separators);
 
-        if ($thousand = array_get($separators, '0.0', null)) {
+        if ($thousand = Arr::get($separators, '0.0', null)) {
             if ($thousand == '!') {
                 $thousand = '';
             }
         }
 
-        $decimal = array_get($separators, '0.1', null);
+        $decimal = Arr::get($separators, '0.1', null);
 
         // Match format for decimals count
         preg_match($valRegex, $format, $valFormat);
 
-        $valFormat = array_get($valFormat, 0, 0);
+        $valFormat = Arr::get($valFormat, 0, 0);
 
         // Count decimals length
         $decimals = $decimal ? strlen(substr(strrchr($valFormat, $decimal), 1)) : 0;
