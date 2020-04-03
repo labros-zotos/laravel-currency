@@ -71,7 +71,7 @@ class Currency
      *
      * @return string|null
      */
-    public function convert($amount, $from = null, $to = null, $format = true)
+    public function convert($amount, $from = null, $to = null, $format = true, $multiplier = 1)
     {
         // Get currencies involved
         $from = $from ?: $this->config('default');
@@ -91,7 +91,7 @@ class Currency
             if ($from === $to) {
                 $value = $amount;
             } else {
-                $value = ($amount * $to_rate) / $from_rate;
+                $value = ($amount * $to_rate) / ($from_rate * $multiplier);
             }
         } catch (\Exception $e) {
             // Prevent invalid conversion or division by zero errors
